@@ -19,9 +19,6 @@ Original file is located at
 
 import os
 import json
-from datetime import datetime
-
-current_time = datetime.now().strftime("%H:%M:%S UTC %a %b %d %Y")
 
 # Charger les données JSON à partir d'un fichier externe
 with open("Intent.json", "r") as file:
@@ -31,7 +28,6 @@ with open("Intent.json", "r") as file:
 def generate_router_config(router, as_data, is_ebgp):
     config = []
     config.append("!\n!\n!\n!")
-    #config.append(f"! Last configuration change at {current_time}")
     config.append("!")
     config.append("version 15.2")
     config.append("service timestamps debug datetime msec")
@@ -50,6 +46,7 @@ def generate_router_config(router, as_data, is_ebgp):
     config.append("ipv6 cef")
     config.append("!")
     config.append("interface Loopback1")
+    config.append(" no ip address")
     config.append(f" ipv6 address {as_data['prefix_loopback_ip']}::{router['hostname'][-2:]}/128")
     config.append(" ipv6 enable")
     config.append("!")
@@ -61,9 +58,10 @@ def generate_router_config(router, as_data, is_ebgp):
 
 
         config.append(f"interface {int_name}")
+        config.append("no ip address")
         config.append(f" ipv6 address {interface_ip}")
         config.append(" ipv6 enable")
-        config.append(" shutdown")
+        config.append(" no shutdown")
         config.append(" negotiation auto")
         config.append("!")
 
@@ -72,6 +70,7 @@ def generate_router_config(router, as_data, is_ebgp):
         config.append(f"router bgp {as_data['bgp']['local_as']}")
         config.append(f" bgp router-id {router['id']}")
         config.append(" bgp log-neighbor-changes")
+        config.append(" no bgp default ipv4-unicast")
         for neighbor in as_data["bgp"]["egbp_neighbors"]:
             if neighbor["connected_router"] == router["hostname"]:
                 config.append(f" neighbor {neighbor['to_router_ip']} remote-as {neighbor['to_as']}")
