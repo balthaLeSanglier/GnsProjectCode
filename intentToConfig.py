@@ -21,17 +21,10 @@ import os
 import json
 from datetime import datetime
 
-current_time = datetime.now().strftime("%H:%M:%S UTC %a %b %d %Y")
-
-# Charger les données JSON à partir d'un fichier externe
-with open("Intent.json", "r") as file:
-    network_data = json.load(file)
-
 # Fonction pour générer la configuration pour un routeur
 def generate_router_config(router, as_data, is_ebgp):
     config = []
     config.append("!\n!\n!\n!")
-    #config.append(f"! Last configuration change at {current_time}")
     config.append("!")
     config.append("version 15.2")
     config.append("service timestamps debug datetime msec")
@@ -86,20 +79,28 @@ def generate_router_config(router, as_data, is_ebgp):
     config.append("end")
     return "\n".join(config)
 
-# Générer les fichiers de configuration pour chaque routeur
-output_directory = "router_configs"
-os.makedirs(output_directory, exist_ok=True)
 
-for as_data in network_data["AS"]:
-    for router in as_data["routers"]:
-        # Vérifier si le routeur utilise eBGP
-        is_ebgp = router["hostname"] in [neighbor["connected_router"] for neighbor in as_data["bgp"]["egbp_neighbors"]]
-        # Générer la configuration
-        config = generate_router_config(router, as_data, is_ebgp)
-        # Écrire la configuration dans un fichier .cfg
-        file_path = os.path.join(output_directory, f"i{router['hostname'].lstrip('R')}_startup-config.cfg")
-        with open(file_path, "w") as file:
-            file.write(config)
+def generate_all_router(network_data, output_directory):
+    for as_data in network_data["AS"]:
+        for router in as_data["routers"]:
+            # Vérifier si le routeur utilise eBGP
+            is_ebgp = router["hostname"] in [neighbor["connected_router"] for neighbor in as_data["bgp"]["egbp_neighbors"]]
+            # Générer la configuration
+            config = generate_router_config(router, as_data, is_ebgp)
+            # Écrire la configuration dans un fichier .cfg
+            file_path = os.path.join(output_directory, f"i{router['hostname'].lstrip('R')}_startup-config.cfg")
+            with open(file_path, "w") as file:
+                file.write(config)
 
-print(f"Configurations générées dans le dossier '{output_directory}'")
-
+def start_generation():
+    # Charger les données JSON à partir d'un fichier externe
+    with open("Intent.json", "r") as file:
+        network_data = json.load(file)
+        
+    # Générer les fichiers de configuration pour chaque routeur
+    output_directory = "router_configs"
+    os.makedirs(output_directory, exist_ok=True)
+    generate_all_router(network_data, output_directory)
+    print(f"Configurations générées dans le dossier '{output_directory}'")
+    
+start_generation()
