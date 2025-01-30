@@ -58,8 +58,14 @@ def generate_router_config(router, as_data, is_ebgp):
         config.append("no ip address")
         config.append(f" ipv6 address {interface_ip}")
         config.append(" ipv6 enable")
-        config.append(" no shutdown")
+        if as_data["protocol"] == "RIP":
+            config.append(f" ipv6 rip {as_data['protocol']}_{router['hostname']} enable")  # RIP
         config.append(" negotiation auto")
+        
+        if interface.get("connected_to"):
+            config.append(" no shutdown")  # Activation conditionnelle
+        else:
+            config.append(" shutdown")
         config.append("!")
 
 
@@ -75,11 +81,20 @@ def generate_router_config(router, as_data, is_ebgp):
         config.append(f"router bgp {as_data['bgp']['local_as']}")
         config.append(f" bgp router-id {router['id']}")
         config.append(" bgp log-neighbor-changes")
+        config.append(" no bgp default ipv4-unicast")
         for peer in as_data["bgp"]["ibgp"][0]["peers"]:
             if peer != router["hostname"]:
-                config.append(f" neighbor {peer} remote-as {as_data['bgp']['local_as']}")
+                peer_loopback = f"{as_data['prefix_loopback_ip']}::{peer[-2:]}"
+                config.append(f" neighbor {peer_loopback} remote-as {as_data['bgp']['local_as']}")
+                config.append(f" neighbor {peer_loopback} update-source Loopback1")
     config.append("!")
-    config.append("end")
+    config.append("address-family ipv6")
+    config.append(" redistribute connected")
+    for peer in as_data["bgp"]["ibgp"][0]["peers"]:
+        if peer != router['hostname']:
+            peer_loopback = f"{as_data['prefix_loopback_ip']}::{peer[-2:]}"
+            config.append(f" neighbor {peer_loopback} activate")
+    config.append(" exit-address-family")
     return "\n".join(config)
 
 
