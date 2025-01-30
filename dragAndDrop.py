@@ -19,10 +19,21 @@ dicoCorrespondance = {
 
 def generateFolders(path):
     for doublet in dicoCorrespondance.items():
-        print(doublet[0])
+        print(dicoCorrespondance["R22"])
         if os.path.exists(path+"/"+doublet[1]):
             os.rmdir(path+"/"+doublet[1])
         os.makedirs(path+"/"+doublet[1])
-
         
-generateFolders("C:/Users/etulyon1/Documents/INSA/TC3/GNS/GnsProjectCode")
+# def generateRouter():
+# 	file = intentToConfig.generate_router_config
+
+def dragAndDropRouter(router, path, config):
+    print(dicoCorrespondance[router])
+    # if os.path.exists(path+"/"+dicoCorrespondance[router]):
+    #     os.rmdir(path+"/"+dicoCorrespondance[router])
+    os.makedirs(path)
+    file_path = os.path.join(path, f"i{router.lstrip('R')}_startup-config.cfg")
+    with open(file_path, "w") as file:
+        file.write(config)
+        
+# generateFolders("C:/Users/etulyon1/Documents/INSA/TC3/GNS/GnsProjectCode")

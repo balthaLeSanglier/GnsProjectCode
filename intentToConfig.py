@@ -20,6 +20,7 @@ Original file is located at
 import os
 import json
 from datetime import datetime
+import dragAndDrop
 
 # Fonction pour générer la configuration pour un routeur
 def generate_router_config(router, as_data, is_ebgp):
@@ -51,9 +52,8 @@ def generate_router_config(router, as_data, is_ebgp):
     for interface in router["interfaces"]:
         int_name = f"GigabitEthernet{interface['gigabitEthernet']}/0"
         prefix_ip = as_data["prefix_interface_ip"] 
-        interface_ip = f"{prefix_ip}{router['hostname'][-2:]}{interface['gigabitEthernet']}::1/64"
-
-
+        interface_ip = f"{prefix_ip}{interface['gigabitEthernet']}::1/64"
+        print(interface_ip)
         config.append(f"interface {int_name}")
         config.append("no ip address")
         config.append(f" ipv6 address {interface_ip}")
@@ -83,27 +83,25 @@ def generate_router_config(router, as_data, is_ebgp):
     return "\n".join(config)
 
 
-def generate_all_router(network_data, output_directory):
+def generate_all_router(network_data, path):
     for as_data in network_data["AS"]:
         for router in as_data["routers"]:
             # Vérifier si le routeur utilise eBGP
-            is_ebgp = router["hostname"] in [neighbor["connected_router"] for neighbor in as_data["bgp"]["egbp_neighbors"]]
+            hostname = router['hostname']
+            is_ebgp = hostname in [neighbor["connected_router"] for neighbor in as_data["bgp"]["egbp_neighbors"]]
             # Générer la configuration
             config = generate_router_config(router, as_data, is_ebgp)
-            # Écrire la configuration dans un fichier .cfg
-            file_path = os.path.join(output_directory, f"i{router['hostname'].lstrip('R')}_startup-config.cfg")
-            with open(file_path, "w") as file:
-                file.write(config)
+            newPath = path + dragAndDrop.dicoCorrespondance[hostname]
+            dragAndDrop.dragAndDropRouter(hostname,newPath,config)
 
-def start_generation():
+def start_generation(path):
     # Charger les données JSON à partir d'un fichier externe
     with open("Intent.json", "r") as file:
         network_data = json.load(file)
         
     # Générer les fichiers de configuration pour chaque routeur
-    output_directory = "router_configs"
-    os.makedirs(output_directory, exist_ok=True)
-    generate_all_router(network_data, output_directory)
-    print(f"Configurations générées dans le dossier '{output_directory}'")
+    generate_all_router(network_data, path)
+    print(f"Configurations générées dans le dossier '{path}'")
     
-start_generation()
+
+start_generation("")
