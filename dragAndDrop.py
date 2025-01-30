@@ -1,4 +1,4 @@
-dicoCorrespondance = {}
+import os
 
 dicoCorrespondance = {
   "R11": "0cd5e6e8-a314-4976-9af0-73cee44fe070",
@@ -13,6 +13,16 @@ dicoCorrespondance = {
   "R23": "32d9435a-d76e-4f14-b795-b2a0f8f901ff",
   "R24": "aba60752-e158-4541-bd31-1fea77dd93b4",
   "R25": "264d0e64-32f6-4c1d-8407-e36e5835d9fc",
-  "R26": "UNKNOWN",
+  "R26": "c7a642de-4fb0-471a-b951-55e818dda8b4",
   "R27": "7b6bdd45-c3fc-4ae1-b1f9-3b8f51e3af9e",
 }
+
+def generateFolders(path):
+    for doublet in dicoCorrespondance.items():
+        print(doublet[0])
+        if os.path.exists(path+"/"+doublet[1]):
+            os.rmdir(path+"/"+doublet[1])
+        os.makedirs(path+"/"+doublet[1])
+
+        
+generateFolders("C:/Users/etulyon1/Documents/INSA/TC3/GNS/GnsProjectCode")
