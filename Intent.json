@@ -5,22 +5,22 @@
         "id": "137",
         "protocol": "RIP",
         "network_address": "2025:100:1:137::/64",
-        "prefix_loopback_ip": "2025:100:1:137::1", 
+        "prefix_loopback_ip": "2025:100:1:137", 
         "prefix_interface_ip": "2025:100:1:137:",
         "bgp": {
             "local_as": "137",
-            "egbp_neighbors": [
+            "ebgp_neighbors": [
             {
                 "to_as": "237",
                 "connected_router": "R11",
-                "to_router_ip": "2025:100:1:237::21",
-                "gigabitEthernet": "4"
+                "to_router_ip": "2025:100:1:237:6::21",
+                "gigabitEthernet": "6"
             },
             {
                 "to_as": "237",
                 "connected_router": "R17",
-                "to_router_ip": "2025:100:1:237::27",
-                "gigabitEthernet": "4"
+                "to_router_ip": "2025:100:1:237:6::27",
+                "gigabitEthernet": "6"
             }
             ],
             "ibgp": [
@@ -40,7 +40,7 @@
                   },
                   {
                       "connected_to": "R16",
-                      "gigabitEthernet": "4"
+                      "gigabitEthernet": "3"
                   }
               ]
             
@@ -54,15 +54,15 @@
                   "gigabitEthernet": "1"
                 },
                 {
-                    "connected_to": "R16",
-                    "gigabitEthernet": "3"
+                    "connected_to": "R13",
+                    "gigabitEthernet": "2"
                 },
                   {
-                      "connected_to": "R13",
-                      "gigabitEthernet": "2"
+                      "connected_to": "R17",
+                      "gigabitEthernet": "3"
                     },
                     {
-                      "connected_to": "R17",
+                      "connected_to": "R16",
                       "gigabitEthernet": "4"
                     }
               ]
@@ -73,16 +73,16 @@
               "id": "13.13.13.13",
               "interfaces": [
                 {
-                  "connected_to": "R12",
-                  "gigabitEthernet": "2"
+                  "connected_to": "R14",
+                  "gigabitEthernet": "1"
                 },
                 {
-                    "connected_to": "R14",
-                    "gigabitEthernet": "1"
+                    "connected_to": "R12",
+                    "gigabitEthernet": "2"
                 },
                   {
                       "connected_to": "R15",
-                      "gigabitEthernet": "3"
+                      "gigabitEthernet": "4"
                     }
               ]
               
@@ -97,7 +97,7 @@
                 },
                 {
                     "connected_to": "R15",
-                    "gigabitEthernet": "4"
+                    "gigabitEthernet": "3"
                 }
               ]
               
@@ -107,16 +107,16 @@
               "id": "15.15.15.15",
               "interfaces": [
                 {
-                  "connected_to": "R13",
-                  "gigabitEthernet": "3"
+                  "connected_to": "R16",
+                  "gigabitEthernet": "2"
                 },
                 {
                     "connected_to": "R14",
-                    "gigabitEthernet": "4"
+                    "gigabitEthernet": "3"
                 },
                   {
-                      "connected_to": "R16",
-                      "gigabitEthernet": "2"
+                      "connected_to": "R13",
+                      "gigabitEthernet": "4"
                     }
               ]
               
@@ -126,20 +126,20 @@
               "id": "16.16.16.16",
               "interfaces": [
                 {
-                  "connected_to": "R15",
-                  "gigabitEthernet": "2"
+                  "connected_to": "R17",
+                  "gigabitEthernet": "1"
                 },
                 {
-                    "connected_to": "R12",
-                    "gigabitEthernet": "3"
+                    "connected_to": "R15",
+                    "gigabitEthernet": "2"
                 },
                   {
                       "connected_to": "R11",
-                      "gigabitEthernet": "4"
+                      "gigabitEthernet": "3"
                     },
                     {
-                      "connected_to": "R17",
-                      "gigabitEthernet": "1"
+                      "connected_to": "R12",
+                      "gigabitEthernet": "4"
                     }
               ]
               
@@ -150,13 +150,17 @@
               "id": "17.17.17.17",
               "interfaces": [
                   {
-                  "connected_to": "R12",
-                  "gigabitEthernet": "4"
+                  "connected_to": "R16",
+                  "gigabitEthernet": "1"
                   },
                   {
-                      "connected_to": "R16",
-                      "gigabitEthernet": "1"
-                  }
+                      "connected_to": "R12",
+                      "gigabitEthernet": "3"
+                  },
+                  {
+                    "connected_to": "R27", 
+                    "gigabitEthernet": "6"
+                }
               ]
 
             }
@@ -166,23 +170,24 @@
       {
         "id": "237",
         "protocol": "OSPF",
+        "ospf_process_id": "27",
         "network_address": "2025:100:1:237::/64",
-        "prefix_loopback_ip": "2025:100:1:237::2", 
+        "prefix_loopback_ip": "2025:100:1:237", 
         "prefix_interface_ip": "2025:100:1:237:",
         "bgp": {
             "local_as": "237",
-            "egbp_neighbors": [
+            "ebgp_neighbors": [
             {
                 "to_as": "137",
                 "connected_router": "R21",
-                "to_router_ip": "2025:100:1:137::11",
-                "gigabitEthernet": "4"
+                "to_router_ip": "2025:100:1:137:6::11",
+                "gigabitEthernet": "6"
             },
             {
                 "to_as": "137",
                 "connected_router": "R27",
-                "to_router_ip": "2025:100:1:137::17",
-                "gigabitEthernet": "4"
+                "to_router_ip": "2025:100:1:137:6::17",
+                "gigabitEthernet": "6"
             }
             ],
             "ibgp": [
@@ -203,7 +208,7 @@
                   },
                   {
                       "connected_to": "R26",
-                      "gigabitEthernet": "4"
+                      "gigabitEthernet": "3"
                   }
               ]
             
@@ -218,15 +223,15 @@
                   "gigabitEthernet": "1"
                 },
                 {
-                    "connected_to": "R26",
-                    "gigabitEthernet": "3"
+                    "connected_to": "R23",
+                    "gigabitEthernet": "2"
                 },
                   {
-                      "connected_to": "R23",
-                      "gigabitEthernet": "2"
+                      "connected_to": "R27",
+                      "gigabitEthernet": "3"
                     },
                     {
-                      "connected_to": "R27",
+                      "connected_to": "R26",
                       "gigabitEthernet": "4"
                     }
               ]
@@ -238,16 +243,16 @@
               "area": "0",
               "interfaces": [
                 {
-                  "connected_to": "R22",
-                  "gigabitEthernet": "2"
+                  "connected_to": "R24",
+                  "gigabitEthernet": "1"
                 },
                 {
-                    "connected_to": "R24",
-                    "gigabitEthernet": "1"
+                    "connected_to": "R23",
+                    "gigabitEthernet": "2"
                 },
                   {
                       "connected_to": "R25",
-                      "gigabitEthernet": "3"
+                      "gigabitEthernet": "4"
                     }
               ]
               
@@ -263,7 +268,7 @@
                 },
                 {
                     "connected_to": "R25",
-                    "gigabitEthernet": "4"
+                    "gigabitEthernet": "3"
                 }
               ]
               
@@ -274,16 +279,16 @@
               "area": "0",
               "interfaces": [
                 {
-                  "connected_to": "R23",
-                  "gigabitEthernet": "3"
+                  "connected_to": "R26",
+                  "gigabitEthernet": "2"
                 },
                 {
                     "connected_to": "R24",
-                    "gigabitEthernet": "4"
+                    "gigabitEthernet": "3"
                 },
                   {
-                      "connected_to": "R26",
-                      "gigabitEthernet": "2"
+                      "connected_to": "R23",
+                      "gigabitEthernet": "4"
                     }
               ]
               
@@ -294,20 +299,20 @@
               "area": "0",
               "interfaces": [
                 {
-                  "connected_to": "R25",
-                  "gigabitEthernet": "2"
+                  "connected_to": "R27",
+                  "gigabitEthernet": "1"
                 },
                 {
-                    "connected_to": "R22",
-                    "gigabitEthernet": "3"
+                    "connected_to": "R25",
+                    "gigabitEthernet": "2"
                 },
                   {
                       "connected_to": "R21",
-                      "gigabitEthernet": "4"
+                      "gigabitEthernet": "3"
                     },
                     {
-                      "connected_to": "R27",
-                      "gigabitEthernet": "1"
+                      "connected_to": "R22",
+                      "gigabitEthernet": "4"
                     }
               ]
               
@@ -319,13 +324,17 @@
               "area": "0",
               "interfaces": [
                   {
-                  "connected_to": "R22",
-                  "gigabitEthernet": "4"
-                  },
-                  {
                       "connected_to": "R26",
                       "gigabitEthernet": "1"
-                  }
+                  },
+                  {
+                    "connected_to": "R22",
+                    "gigabitEthernet": "3"
+                  },
+                  {
+                    "connected_to": "R17", 
+                    "gigabitEthernet": "6"
+                }
               ]
 
             }
