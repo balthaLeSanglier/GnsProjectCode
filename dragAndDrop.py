@@ -1,7 +1,7 @@
 import os
 
 dicoCorrespondance = {
-    "R11": {"idRouter": "0cd5e6e8-a314-4976-9af0-73cee44fe070", "startupId": "i11"},
+    "R11": {"idRouter": "0cd5e6e8-a314-4976-9af0-73cee44fe070", "id": "i11"},
     "R12": {"idRouter": "805e7a1b-26e1-4e17-bde0-08089b23471b", "id": "i3"},
     "R13": {"idRouter": "63a70cc7-808d-44bf-9474-dcc3db5fba1d", "id": "i2"},
     "R14": {"idRouter": "250ff1dd-e98e-4993-a470-26f8e4764d19", "id": "i1"},
