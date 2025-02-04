@@ -91,7 +91,7 @@ def generate_all_router(network_data, path):
             is_ebgp = hostname in [neighbor["connected_router"] for neighbor in as_data["bgp"]["egbp_neighbors"]]
             # Générer la configuration
             config = generate_router_config(router, as_data, is_ebgp)
-            newPath = path + dragAndDrop.dicoCorrespondance[hostname]
+            newPath = path + dragAndDrop.dicoCorrespondance[hostname]["idRouter"]
             dragAndDrop.dragAndDropRouter(hostname,newPath,config)
 
 def start_generation(path):
