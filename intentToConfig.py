@@ -50,7 +50,7 @@ def generate_router_config(router, as_data, network_data, is_ebgp):
         # Déterminer si l'interface est eBGP
         is_ebgp_interface = gig in ebgp_interfaces
         if "ipv6" in interface:
-            interface_ip = interface["ipv6"]
+            interface_ip = f"2025:100:1:37::{router['hostname'][-2:]}/64"
         else:
         # Choisir le préfixe approprié
             if is_ebgp_interface:
@@ -64,10 +64,13 @@ def generate_router_config(router, as_data, network_data, is_ebgp):
                 neighbor_as = next((a for a in network_data["AS"] if a["id"] == to_as), None)
                 if neighbor_as:
                     prefix_ip = "2025:100:1:37::"
+                
+
             else:
                 prefix_ip = as_data["prefix_interface_ip"]
         
-                interface_ip = f"{prefix_ip}{gig}::{router['hostname'][-2:]}/64"
+                interface_ip = f"{as_data['prefix_interface_ip']}{gig}::{router['hostname'][-2:]}/64"
+
         
         config.append(f"interface {int_name}")
         config.append(" no ip address")
@@ -97,7 +100,7 @@ def generate_router_config(router, as_data, network_data, is_ebgp):
     for neighbor in as_data["bgp"].get("ebgp_neighbors", []):
         if neighbor["connected_router"] == router["hostname"]:
             config.append(f" neighbor {neighbor['to_router_ip']} remote-as {neighbor['to_as']}")
-            config.append(f"  neighbor {neighbor['to_router_ip']} activate")
+            config.append(f" neighbor {neighbor['to_router_ip']} activate")
     
     # Ajouter les voisins iBGP (même pour les routeurs eBGP)
     for peer in as_data["bgp"]["ibgp"][0]["peers"]:
