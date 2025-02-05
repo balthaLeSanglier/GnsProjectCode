@@ -35,8 +35,13 @@ def generate_router_config(router, as_data, network_data, is_ebgp):
     # Identifier les interfaces eBGP
     ebgp_interfaces = []
     for neighbor in as_data["bgp"].get("ebgp_neighbors", []):
-        if neighbor["connected_router"] == router['hostname']:
+        if neighbor["connected_router"] == router["hostname"]:
             ebgp_interfaces.append(neighbor["gigabitEthernet"])
+            config.append(f" neighbor {neighbor['to_router_ip']} remote-as {neighbor['to_as']}")
+            # Pour une session eBGP, utiliser Loopback1 en source et autoriser le multihop
+            if as_data["bgp"]["local_as"] != neighbor["to_as"]:
+                config.append(f" neighbor {neighbor['to_router_ip']} update-source Loopback1")
+                config.append(f" neighbor {neighbor['to_router_ip']} ebgp-multihop 2")
 
     for interface in router["interfaces"]:
         int_name = f"GigabitEthernet{interface['gigabitEthernet']}/0"
@@ -44,35 +49,32 @@ def generate_router_config(router, as_data, network_data, is_ebgp):
         
         # Déterminer si l'interface est eBGP
         is_ebgp_interface = gig in ebgp_interfaces
-        
-        # Choisir le préfixe approprié
-        if is_ebgp_interface:
-            # Trouver l'AS voisin et extraire le préfixe
-            to_as = None
-            for neighbor in as_data["bgp"]["ebgp_neighbors"]:
-                if neighbor["connected_router"] == router['hostname'] and neighbor["gigabitEthernet"] == gig:
-                    to_as = neighbor["to_as"]
-                    break
-            # Trouver les données de l'AS voisin
-            neighbor_as = next((a for a in network_data["AS"] if a["id"] == to_as), None)
-            if neighbor_as:
-                prefix_ip = neighbor_as["prefix_interface_ip"]
-            else:
-                prefix_ip = as_data["prefix_interface_ip"]  # Fallback
+        if "ipv6" in interface:
+            interface_ip = interface["ipv6"]
         else:
-            prefix_ip = as_data["prefix_interface_ip"]
+        # Choisir le préfixe approprié
+            if is_ebgp_interface:
+                # Trouver l'AS voisin et extraire le préfixe
+                to_as = None
+                for neighbor in as_data["bgp"]["ebgp_neighbors"]:
+                    if neighbor["connected_router"] == router['hostname'] and neighbor["gigabitEthernet"] == gig:
+                        to_as = neighbor["to_as"]
+                        break
+                # Trouver les données de l'AS voisin
+                neighbor_as = next((a for a in network_data["AS"] if a["id"] == to_as), None)
+                if neighbor_as:
+                    prefix_ip = "2025:100:1:37::"
+            else:
+                prefix_ip = as_data["prefix_interface_ip"]
         
-        interface_ip = f"{prefix_ip}{gig}::{router['hostname'][-2:]}/80"
+                interface_ip = f"{prefix_ip}{gig}::{router['hostname'][-2:]}/64"
         
         config.append(f"interface {int_name}")
         config.append(" no ip address")
         config.append(" negotiation auto")
         config.append(f" ipv6 address {interface_ip}")
         config.append(" ipv6 enable")
-        if interface.get("connected_to"):
-            config.append(" no shutdown")  
-        else:
-            config.append(" shutdown")
+        config.append(" no shutdown")
 
         rip_process_name = f"RIP_{as_data['id']}"  
         
@@ -95,6 +97,7 @@ def generate_router_config(router, as_data, network_data, is_ebgp):
     for neighbor in as_data["bgp"].get("ebgp_neighbors", []):
         if neighbor["connected_router"] == router["hostname"]:
             config.append(f" neighbor {neighbor['to_router_ip']} remote-as {neighbor['to_as']}")
+            config.append(f"  neighbor {neighbor['to_router_ip']} activate")
     
     # Ajouter les voisins iBGP (même pour les routeurs eBGP)
     for peer in as_data["bgp"]["ibgp"][0]["peers"]:
@@ -109,10 +112,15 @@ def generate_router_config(router, as_data, network_data, is_ebgp):
     config.append(" !")
     config.append(" address-family ipv6")
     config.append("  redistribute connected")
+    if as_data["protocol"] == "RIP":
+        config.append("  redistribute rip RIP_AS" + as_data["id"])
+    elif as_data["protocol"] == "OSPF":
+        config.append("  redistribute ospf " + as_data["ospf_process_id"])
+
     for interface in router["interfaces"]:
         if interface.get("connected_to"):  
             gig = interface["gigabitEthernet"]  
-            network_prefix = f"{as_data['prefix_interface_ip']}{gig}::/80"
+            network_prefix = f"{as_data['prefix_interface_ip']}{gig}::/64"
             config.append(f"  network {network_prefix}")
     for neighbor in as_data["bgp"].get("ebgp_neighbors", []):
         if neighbor["connected_router"] == router['hostname']:

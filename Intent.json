@@ -13,13 +13,13 @@
             {
                 "to_as": "237",
                 "connected_router": "R11",
-                "to_router_ip": "2025:100:1:237:6::21",
+                "to_router_ip": "2025:100:1:37::21",
                 "gigabitEthernet": "6"
             },
             {
                 "to_as": "237",
                 "connected_router": "R17",
-                "to_router_ip": "2025:100:1:237:6::27",
+                "to_router_ip": "2025:100:1:37::27",
                 "gigabitEthernet": "6"
             }
             ],
@@ -27,8 +27,16 @@
                 {
                     "peers": ["R11", "R12", "R13", "R14", "R15", "R16", "R17"] 
                 }
-            ]
+            ],
+
+        "interAS_links": [
+    {
+        "routers": ["R17", "R27"],
+        "subnet": "2025:100:1:37::/128"
+    }
+]
         },
+        
         "routers": [
           {
               "hostname": "R11",
@@ -159,7 +167,8 @@
                   },
                   {
                     "connected_to": "R27", 
-                    "gigabitEthernet": "6"
+                    "gigabitEthernet": "6",
+                    "ipv6" : "2025:100:1:37::17/128"
                 }
               ]
 
@@ -180,13 +189,13 @@
             {
                 "to_as": "137",
                 "connected_router": "R21",
-                "to_router_ip": "2025:100:1:137:6::11",
+                "to_router_ip": "2025:100:1:37::11",
                 "gigabitEthernet": "6"
             },
             {
                 "to_as": "137",
                 "connected_router": "R27",
-                "to_router_ip": "2025:100:1:137:6::17",
+                "to_router_ip": "2025:100:1:37::17",
                 "gigabitEthernet": "6"
             }
             ],
@@ -333,13 +342,20 @@
                   },
                   {
                     "connected_to": "R17", 
-                    "gigabitEthernet": "6"
+                    "gigabitEthernet": "6",
+                    "ipv6": "2025:100:1:37::27/64"
                 }
               ]
 
             }
 
-        ]
+        ],
+        "interAS_links": [
+    {
+        "routers": ["R17", "R27"],
+        "subnet": "2025:100:1:37::/128"
+    }
+]
       }
     ]
   }
