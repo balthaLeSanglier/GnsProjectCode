@@ -21,6 +21,7 @@ import os
 import json
 from datetime import datetime
 import dragAndDrop
+import sys
 
 # Fonction pour générer la configuration pour un routeur
 def generate_router_config(router, as_data, is_ebgp):
@@ -104,4 +105,4 @@ def start_generation(path):
     print(f"Configurations générées dans le dossier '{path}'")
     
 
-start_generation("")
+start_generation(sys.argv[1])
